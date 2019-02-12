@@ -82,6 +82,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LibraryTest\LibraryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controllers\HomeControllerTest.cs" />
   </ItemGroup>
@@ -92,6 +93,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TermDepositsLibrary\TermDepositsLibrary.csproj">
+      <Project>{0d9cef02-a70f-4296-ac09-34db418c0354}</Project>
+      <Name>TermDepositsLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TermDeposit\TermDeposit.csproj">
       <Project>{A67C6535-F314-41E1-B5A3-3E99AA789C8B}</Project>
       <Name>TermDeposit</Name>

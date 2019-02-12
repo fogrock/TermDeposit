@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TermDeposit", "TermDeposit\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TermDeposit.Tests", "TermDeposit.Tests\TermDeposit.Tests.csproj", "{336D28B1-7788-4980-A97B-5FB1DC86815C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TermDepositsLibrary", "TermDepositsLibrary\TermDepositsLibrary.csproj", "{0D9CEF02-A70F-4296-AC09-34DB418C0354}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{336D28B1-7788-4980-A97B-5FB1DC86815C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{336D28B1-7788-4980-A97B-5FB1DC86815C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{336D28B1-7788-4980-A97B-5FB1DC86815C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D9CEF02-A70F-4296-AC09-34DB418C0354}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D9CEF02-A70F-4296-AC09-34DB418C0354}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D9CEF02-A70F-4296-AC09-34DB418C0354}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D9CEF02-A70F-4296-AC09-34DB418C0354}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
