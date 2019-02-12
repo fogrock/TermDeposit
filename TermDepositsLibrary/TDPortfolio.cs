@@ -6,10 +6,28 @@ using System.Threading.Tasks;
 
 namespace TermDepositsLibrary
 {
-    public static class TDPortfolio
+    public class TDPortfolio
     {
         const int mn = 1000000;
-        public static List<TermDeposit> GetTDPortfolio(int numberHoldings = 50, int minInitMaturValueMn = 70, int maxInitMaturValueMn = 100, int minMaturValMn = 50, int maxMaturValMn = 120)
+        private List<TermDeposit> _holdngsList = new List<TermDeposit>();
+
+        public List<TermDeposit> holdngsList
+        {
+            get { return _holdngsList; }
+            set { _holdngsList = ModifyHoldings(); }
+        }
+
+        public TDPortfolio()
+        {
+            _holdngsList = GetTDPortfolio();
+        }
+
+        public TDPortfolio(int numberHoldings = 50, int minInitMaturValueMn = 70, int maxInitMaturValueMn = 100, int minMaturValMn = 50, int maxMaturValMn = 120)
+        {
+            _holdngsList = GetTDPortfolio(numberHoldings, minInitMaturValueMn, maxInitMaturValueMn, minMaturValMn, maxMaturValMn);
+        }
+
+        public List<TermDeposit> GetTDPortfolio(int numberHoldings = 50, int minInitMaturValueMn = 70, int maxInitMaturValueMn = 100, int minMaturValMn = 50, int maxMaturValMn = 120)
         {
             List<TermDeposit> termDepositPortfolio = new List<TermDeposit>();
 
@@ -19,14 +37,21 @@ namespace TermDepositsLibrary
             double ldpv = 0;
             while (ldpv < totalLargeDepositsValue)
             {
-                TermDeposit td = GetTermDeposit(true);
+                TermDeposit td = GetTermDeposit(3 * mn, 5 * mn);
                 termDepositPortfolio.Add(td);
                 ldpv += td.maturityAmount;
             }
 
-            while (ldpv < totalPortfolioValue)
+            double minRemaningDepositsValue = minInitMaturValueMn * mn - GetPortfolioMV(termDepositPortfolio);
+            double maxRemaningDepositsValue = maxInitMaturValueMn * mn - GetPortfolioMV(termDepositPortfolio);
+            int remainingNumberHoldings = numberHoldings - termDepositPortfolio.Count;
+
+            double lowerBorderDeposit = minRemaningDepositsValue / remainingNumberHoldings;
+            double higherBorderDeposit = maxRemaningDepositsValue / remainingNumberHoldings;
+
+            for (int i = 0; i < remainingNumberHoldings; i++)
             {
-                TermDeposit td = GetTermDeposit();
+                TermDeposit td = GetTermDeposit(lowerBorderDeposit, higherBorderDeposit, true);
                 termDepositPortfolio.Add(td);
                 ldpv += td.maturityAmount;
             }
@@ -34,18 +59,46 @@ namespace TermDepositsLibrary
             return termDepositPortfolio;
         }
 
-        public static TermDeposit GetTermDeposit(bool large = false)
+        public List<TermDeposit> ModifyHoldings(string action = "hold")
         {
-            double tdPrinciple = large == true ? Utility.GetDoubleRandom(3 * mn, 5 * mn) : Utility.GetDoubleRandom(1 * mn, 3 * mn);
+
+            return holdngsList;
+        }
+
+        public TermDeposit GetTermDeposit(double principalMin, double principalMax, bool useAsMV = false)
+        {
+
             int tdTerm = Utility.GetIntRandom(1, 10);
             int year = DateTime.Now.Year - Utility.GetIntRandom(1, tdTerm - 1);
             string month = $"{Utility.GetIntRandom(1, 12):00}";
             string day = $"{Utility.GetIntRandom(1, 28):00}";
             string startDateStr = $"{year}-{month}-{day}";
             DateTime tdStartDate = DateTime.ParseExact(startDateStr, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
-            double tdInterestRate = Math.Round(Utility.GetDoubleRandom(0.0150, 0.0285, false), 4);            
+            double tdInterestRate = Math.Round(Utility.GetDoubleRandom(0.0150, 0.0285, false), 4);
+            double tdPrinciple = 0;
+            if (useAsMV == true)
+            {
+                double mv = Utility.GetDoubleRandom(principalMin, principalMax);
+                tdPrinciple = mv / Math.Pow((1 + tdInterestRate / 365), (365 * tdTerm));
+            }
+            else
+            {
+                tdPrinciple = Utility.GetDoubleRandom(principalMin, principalMax);
+            }
+
             TermDeposit td = new TermDeposit(tdPrinciple, tdStartDate, tdInterestRate, tdTerm);
             return td;
+        }
+
+        public double GetPortfolioMV(List<TermDeposit> termDepositPortfolio)
+        {
+            double portfolioMaturTotal = termDepositPortfolio.Sum(item => item.maturityAmount);
+            return portfolioMaturTotal;
+        }
+
+        public double GetPortfolioMV()
+        {
+            return holdngsList.Sum(item => item.maturityAmount);
         }
     }
 }
