@@ -17,5 +17,14 @@ namespace TermDeposit.Utility
             }
             set { HttpContext.Current.Session["CurrentTermDepositPortfolio"] = value; }
         }
+
+        public static string Action
+        {
+            get
+            {
+                return (string)HttpContext.Current.Session["CurrentAction"];
+            }
+            set { HttpContext.Current.Session["CurrentAction"] = value; }
+        }
     }
 }

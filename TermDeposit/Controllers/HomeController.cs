@@ -11,6 +11,7 @@ namespace TermDepositsLibraryTermDeposit.Controllers
 
     public class HomeController : Controller
     {
+        const int mn = 1000000;
         [HttpGet]
         public ActionResult Index()
         {
@@ -18,14 +19,37 @@ namespace TermDepositsLibraryTermDeposit.Controllers
             {
                 SessionManager.TermDepositPortfolio = new TDPortfolio();
             }
+
+            if (SessionManager.Action == "buy")
+            {
+                ViewBag.isBuy = "true";
+            }
+
+            if (SessionManager.Action == "sell")
+            {
+                ViewBag.isSell = "true";
+            }
+
             return View(SessionManager.TermDepositPortfolio);
         }
 
         [HttpPost]
         public ActionResult Buy()
         {
-            SessionManager.TermDepositPortfolio.ModifyHoldings("buy");
-            ViewBag.isBuy = "true";
+            if (SessionManager.TermDepositPortfolio.GetPortfolioMV() < 120 * mn)
+            {
+                SessionManager.TermDepositPortfolio.ModifyHoldings("buy");
+
+                if (SessionManager.TermDepositPortfolio.GetPortfolioMV() < 120 * mn)
+                {
+                    SessionManager.Action = "buy";
+                }
+                else
+                {
+                    SessionManager.Action = "hold";
+                }
+            }
+
             return RedirectToAction("Index", "Home");
             //return View(tdp);RedirectToAction
         }
@@ -33,8 +57,19 @@ namespace TermDepositsLibraryTermDeposit.Controllers
         [HttpPost]
         public ActionResult Sell()
         {
-            SessionManager.TermDepositPortfolio.ModifyHoldings("sell");
-            ViewBag.isSell = "true";
+            if (SessionManager.TermDepositPortfolio.GetPortfolioMV() > 50 * mn)
+            {
+                SessionManager.TermDepositPortfolio.ModifyHoldings("sell");
+
+                if (SessionManager.TermDepositPortfolio.GetPortfolioMV() > 50 * mn)
+                {
+                    SessionManager.Action = "sell";
+                }
+                else
+                {
+                    SessionManager.Action = "hold";
+                }
+            }
             return RedirectToAction("Index", "Home");
         }
     }
