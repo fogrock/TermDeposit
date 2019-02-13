@@ -58,15 +58,36 @@ namespace TermDepositsLibrary
                 ldpv += td.maturityAmount;
                 Thread.Sleep(50);
             }
-
-
             return termDepositPortfolio;
         }
 
         public List<TermDeposit> ModifyHoldings(string action = "hold")
         {
-
+            switch (action.ToLower())
+            {
+                case "buy":
+                    TermDeposit td = GetTermDeposit(3 * mn, 5 * mn);
+                    _holdngsList.Add(td);
+                    break;
+                case "sell":
+                    TermDeposit item = holdngsList.FirstOrDefault(o => (o.principal >= 3 * mn && o.principal <= 5 * mn));
+                    if (item != null)
+                    {
+                        _holdngsList.Remove(item);
+                    }
+                    break;
+            }
             return holdngsList;
+        }
+
+        public void RemoveHolding(double number)
+        {
+            TermDeposit item = holdngsList.FirstOrDefault(o => (o.principal == number));
+            if (item != null)
+            {
+                _holdngsList.Remove(item);
+            }
+
         }
 
         public TermDeposit GetTermDeposit(double principalMin, double principalMax, bool useAsMV = false)

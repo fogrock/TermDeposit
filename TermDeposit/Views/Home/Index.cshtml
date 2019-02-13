@@ -3,19 +3,21 @@
 <div class="jumbotron">
     <h1>Term Deposit Portfolio</h1>
     <p class="lead">A place to review and modify your holdings</p>
-    <p>
-        <div class="form-group">
-            <label for="sel1">Portfolio Actions:</label>
-            <select class="form-control" id="sel1">
-                <option>Hold</option>
-                <option>Buy</option>
-                <option>Sell</option>                
-            </select>
-        </div>
-    </p>
+    @*@using (Html.BeginForm("Index", "Home", FormMethod.Post, new { enctype = "multipart/form-data", id = "actionForm", autocomplete = "off" }))
+        {*@
+    <div class="form-group">
+        <label for="select">Portfolio Actions:</label>
+        <select class="form-control" id="select" name="select">
+            <option value="Hold">Hold</option>
+            <option value="Buy">Buy</option>
+            <option value="Sell">Sell</option>
+        </select>
+    </div>
+    @*}*@
+
 </div>
 <div class="row">
-    <table class="table">
+    <table id="table" class="table">
         <thead>
             <tr>
                 <th scope="col">#</th>
@@ -33,12 +35,12 @@
             {
                 <tr>
                     <th scope="row">@i</th>
-                    <td>@td.principal</td>
+                    <td class="principal">@td.principalString</td>
                     <td>@td.startDateString</td>
                     <td>@td.endDateString</td>
                     <td>@td.interestRateString</td>
                     <td>@td.term</td>
-                    <td>@td.maturityAmount</td>
+                    <td>@td.maturityAmountString</td>
                 </tr>
                 i++;
             }
@@ -51,6 +53,32 @@
     <script>
         var tmv = formatMoney(Number(@Model.GetPortfolioMV()));
         document.getElementById("tmv").innerHTML = "Total maturity value: " + tmv;
+
+        $("#select").change(function () {
+            value = $('#select').val();            
+            if (value === "Buy") {                
+                $.ajax({
+                    type: "POST",
+                    url: "/Home/Buy/",
+                    data: { },
+                    contentType: 'json',
+                    success: function () {
+                        location.reload(true)
+                    }
+                });
+            }
+            if (value === "Sell") {                
+            $.ajax({
+                type: "POST",
+                url: "/Home/Sell/",
+                data: { },
+                contentType: 'json',
+                success: function () {
+                    location.reload(true)
+                }
+            });
+            }
+        });   
 
         function formatMoney(number) {
             return number.toLocaleString('en-AU', { style: 'currency', currency: 'AUD' });

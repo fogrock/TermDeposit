@@ -18,6 +18,10 @@ namespace TermDepositsLibrary
         public int term { get; set; }
         public double maturityAmount { get { return _maturityAmount; } set { _maturityAmount = getMaturityAmount(principal, interestRate, term); } }
         public DateTime endDate { get { return _endDate; } set { _endDate = getEndDate(startDate, term); } }
+        public string principalString
+        {
+            get { return principal.ToString("C2"); }
+        }
         public string startDateString
         {
             get { return startDate.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture); }            
@@ -28,9 +32,12 @@ namespace TermDepositsLibrary
         }
         public string interestRateString
         {
-            get { return (interestRate * 100).ToString() + '%'; }            
-        }        
-
+            get { return (interestRate).ToString("P2"); }            
+        }
+        public string maturityAmountString
+        {
+            get { return (maturityAmount).ToString("C2"); }
+        }
         public DateTime getEndDate(DateTime startDate, int term)
         {
             DateTime endDate = startDate.AddYears(term);
