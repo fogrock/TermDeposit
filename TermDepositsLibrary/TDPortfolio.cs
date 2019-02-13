@@ -28,15 +28,17 @@ namespace TermDepositsLibrary
             _holdngsList = GetTDPortfolio(numberHoldings, minInitMaturValueMn, maxInitMaturValueMn, minMaturValMn, maxMaturValMn);
         }
 
+        //this method populates _holdngsList property by creating a new list of term deposits
         public List<TermDeposit> GetTDPortfolio(int numberHoldings = 50, int minInitMaturValueMn = 70, int maxInitMaturValueMn = 100, int minMaturValMn = 50, int maxMaturValMn = 120)
         {
             List<TermDeposit> termDepositPortfolio = new List<TermDeposit>();
 
-            double totalPortfolioValue = Utility.GetDoubleRandom(minInitMaturValueMn * mn, maxInitMaturValueMn * mn);
-            double totalLargeDepositsValue = totalPortfolioValue - minMaturValMn * mn;
-
+            // get random portfolio MV between upper and lowr limits            
+            // some deposits must have principle between $3 and 5 mn - detemined required pool size and add large deposits to the portfolio
+            double totalPortfolioMV = maxInitMaturValueMn * mn;
+            double totalLargeDepositsMV = totalPortfolioMV - (minMaturValMn) * mn;
             double ldpv = 0;
-            while (ldpv < totalLargeDepositsValue)
+            while (ldpv < totalLargeDepositsMV)
             {
                 TermDeposit td = GetTermDeposit(3 * mn, 5 * mn);
                 termDepositPortfolio.Add(td);
@@ -44,6 +46,8 @@ namespace TermDepositsLibrary
                 Thread.Sleep(50);
             }
 
+            // rest of portfolio can have random principle size, limited to calculated upper and lower vaues. 
+            // total amount of holdings requirement is also met here by adding exact remaining number of deposits 
             double minRemaningDepositsValue = minInitMaturValueMn * mn - GetPortfolioMV(termDepositPortfolio);
             double maxRemaningDepositsValue = maxInitMaturValueMn * mn - GetPortfolioMV(termDepositPortfolio);
             int remainingNumberHoldings = numberHoldings - termDepositPortfolio.Count;
@@ -80,19 +84,9 @@ namespace TermDepositsLibrary
             return holdngsList;
         }
 
-        public void RemoveHolding(double number)
-        {
-            TermDeposit item = holdngsList.FirstOrDefault(o => (o.principal == number));
-            if (item != null)
-            {
-                _holdngsList.Remove(item);
-            }
-
-        }
-
+        // this method creates and returns a random instance of TermDeposit class to be added to the portfolio
         public TermDeposit GetTermDeposit(double principalMin, double principalMax, bool useAsMV = false)
         {
-
             int tdTerm = Utility.GetIntRandom(1, 10);
             int year = DateTime.Now.Year - Utility.GetIntRandom(1, tdTerm - 1);
             string month = $"{Utility.GetIntRandom(1, 12):00}";

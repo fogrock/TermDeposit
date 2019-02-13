@@ -8,6 +8,7 @@ namespace TermDeposit.Utility
 {
     public class SessionManager
     {
+        // create session variable to hold portfolio object
         public static TDPortfolio TermDepositPortfolio
         {
             get
@@ -18,6 +19,7 @@ namespace TermDeposit.Utility
             set { HttpContext.Current.Session["CurrentTermDepositPortfolio"] = value; }
         }
 
+        // create session variable to hold currecnt action i.e. "buy"/"sell"/"hold"
         public static string Action
         {
             get

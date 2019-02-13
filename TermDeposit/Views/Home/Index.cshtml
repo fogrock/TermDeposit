@@ -2,9 +2,7 @@
 
 <div class="jumbotron">
     <h1>Term Deposit Portfolio</h1>
-    <p class="lead">A place to review and modify your holdings</p>
-    @*@using (Html.BeginForm("Index", "Home", FormMethod.Post, new { enctype = "multipart/form-data", id = "actionForm", autocomplete = "off" }))
-        {*@
+    <p class="lead">A place to review and modify your holdings</p>    
     <div class="form-group">
         <label for="select">Portfolio Actions:</label>
         <select class="form-control" id="select" name="select">
@@ -12,14 +10,13 @@
             <option value="Buy">Buy</option>
             <option value="Sell">Sell</option>
         </select>
-    </div>
-    @*}*@
+    </div>    
     <div id='seconds-counter'> </div>
     <br>
     <h2 id="tmv"></h2>
 </div>
 <div class="row">
-    <table id="table" class="table table-striped table-hover">
+    <table id="table" class="table table-hover">
         <thead>
             <tr>
                 <th scope="col">#</th>
@@ -46,14 +43,16 @@
                 </tr>
                 i++;
             }
-
         </tbody>
     </table>
 </div>
 <script>
+    // Format total maturity value and assign it to the element
     var tmv = formatMoney(Number(@Model.GetPortfolioMV()));
     document.getElementById("tmv").innerHTML = "Total maturity value: " + tmv;
 
+    // check if controller determined that automated buying has to continue
+    // if so, trigger change event on the select, which will in turn trigger return to controller
     var isBuy = null;
     @if (ViewBag.isBuy != null) {
             @: isBuy = '@ViewBag.isBuy';
@@ -70,6 +69,8 @@
         setTimeout(function () { $('#select option[value="Buy"]').attr("selected", "selected"); $('#select').trigger("change"); }, 5000);
     }
 
+    // check if controller determined that automated selling has to continue
+    // if so, trigger change event on the select, which will in turn trigger return to controller
     var isSell = null;
     @if (ViewBag.isSell != null) {
             @: isSell = '@ViewBag.isSell';
@@ -80,23 +81,24 @@
 
         function incrementSeconds() {
             seconds += 1;
-            el.innerText = "Counting: " + seconds + " seconds";
+            el.innerText = "Waiting: " + seconds + " seconds";
         }
         var cancel = setInterval(incrementSeconds, 1000);
         setTimeout(function () { $('#select option[value="Sell"]').attr("selected", "selected"); $('#select').trigger("change"); }, 5000);
     }
 
     $("#select").change(function () {
-
+        // Start displaying timer 
         var seconds = 0;
         var el = document.getElementById('seconds-counter');
 
         function incrementSeconds() {
             seconds += 1;
-            el.innerText = "Counting: " + seconds + " seconds";
+            el.innerText = "Waiting: " + seconds + " seconds";
         }
         var cancel = setInterval(incrementSeconds, 1000);
 
+        // Based on selected action post back to controller to perform buy/sell action and update the view
         value = $('#select').val();
         if (value === "Buy") {
             $.ajax({

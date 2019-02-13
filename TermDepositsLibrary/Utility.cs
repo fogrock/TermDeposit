@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace TermDepositsLibrary
 {
     public static class Utility
-    {
+    {        
         public static double GetDoubleRandom(double minimum, double maximum, bool round=true)
         {
             Random random = new Random();
