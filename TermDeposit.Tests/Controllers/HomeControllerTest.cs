@@ -5,7 +5,7 @@ using System.Text;
 using System.Web.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TermDeposit;
-using TermDeposit.Controllers;
+using TermDepositsLibraryTermDeposit.Controllers;
 
 namespace TermDeposit.Tests.Controllers
 {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace TermDepositsLibrary
 {
@@ -40,6 +41,7 @@ namespace TermDepositsLibrary
                 TermDeposit td = GetTermDeposit(3 * mn, 5 * mn);
                 termDepositPortfolio.Add(td);
                 ldpv += td.maturityAmount;
+                Thread.Sleep(50);
             }
 
             double minRemaningDepositsValue = minInitMaturValueMn * mn - GetPortfolioMV(termDepositPortfolio);
@@ -54,7 +56,9 @@ namespace TermDepositsLibrary
                 TermDeposit td = GetTermDeposit(lowerBorderDeposit, higherBorderDeposit, true);
                 termDepositPortfolio.Add(td);
                 ldpv += td.maturityAmount;
+                Thread.Sleep(50);
             }
+
 
             return termDepositPortfolio;
         }
@@ -79,7 +83,7 @@ namespace TermDepositsLibrary
             if (useAsMV == true)
             {
                 double mv = Utility.GetDoubleRandom(principalMin, principalMax);
-                tdPrinciple = mv / Math.Pow((1 + tdInterestRate / 365), (365 * tdTerm));
+                tdPrinciple = Math.Round((mv / Math.Pow((1 + tdInterestRate / 365), (365 * tdTerm))), 2);
             }
             else
             {

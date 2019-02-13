@@ -1,31 +1,59 @@
-﻿@{
-    ViewBag.Title = "Home Page";
-}
+﻿@model TermDepositsLibrary.TDPortfolio
 
 <div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="http://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+    <h1>Term Deposit Portfolio</h1>
+    <p class="lead">A place to review and modify your holdings</p>
+    <p>
+        <div class="form-group">
+            <label for="sel1">Portfolio Actions:</label>
+            <select class="form-control" id="sel1">
+                <option>Hold</option>
+                <option>Buy</option>
+                <option>Sell</option>                
+            </select>
+        </div>
+    </p>
 </div>
-
 <div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Principal</th>
+                <th scope="col">Start Date</th>
+                <th scope="col">End Date</th>
+                <th scope="col">Interest Rate</th>
+                <th scope="col">Term</th>
+                <th scope="col">Maturity Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{int i = 1;}
+            @foreach (var td in Model.holdngsList)
+            {
+                <tr>
+                    <th scope="row">@i</th>
+                    <td>@td.principal</td>
+                    <td>@td.startDateString</td>
+                    <td>@td.endDateString</td>
+                    <td>@td.interestRateString</td>
+                    <td>@td.term</td>
+                    <td>@td.maturityAmount</td>
+                </tr>
+                i++;
+            }
+
+        </tbody>
+    </table>
+</div>
+<div class="row">
+    <h2 id="tmv"></h2>
+    <script>
+        var tmv = formatMoney(Number(@Model.GetPortfolioMV()));
+        document.getElementById("tmv").innerHTML = "Total maturity value: " + tmv;
+
+        function formatMoney(number) {
+            return number.toLocaleString('en-AU', { style: 'currency', currency: 'AUD' });
+        }
+    </script>
 </div>
